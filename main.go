@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"gin/lib"
 	"gin/router"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -12,7 +13,7 @@ import (
 	"time"
 )
 
-func init()  {
+func init() {
 	logFile, _ := os.Create("log/gin.log")
 	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
 	gin.ForceConsoleColor()
@@ -56,7 +57,7 @@ func main() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
 		}
-		log.Printf("listen:%s",server.Addr)
+		log.Printf("listen:%s", server.Addr)
 	}()
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
 	quit := make(chan os.Signal)
@@ -69,5 +70,6 @@ func main() {
 		log.Fatal("Server Shutdown:", err)
 	}
 	log.Println("Server exiting")
+	defer lib.Gorm.Close()
 	//engine.Run(":8080")
 }
